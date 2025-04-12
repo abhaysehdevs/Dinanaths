@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore Dinanath & Sons's collection of stylish home appliances and decor. Shop for sofas, lamps, mirrors, home appliances and more at affordable prices.">
+  <meta name="keywords" content="home appliances, home decor, Dinanath & Sons, ghar dazzle">
+  <meta name="author" content="Dinanath & Sons">
+  <title>Dinanath & Sons</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+  
+  <script defer src="products.js"></script>
+  <script defer src="scripts.js"></script>
+  <script>
+    
+    function loginUser(event) {
+      event.preventDefault();
+      localStorage.setItem('isLoggedIn', 'true');
+      updateHeaderLinks();
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('isLoggedIn');
+      updateHeaderLinks();
+    }
+
+    function updateHeaderLinks() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      document.getElementById('user-link').style.display = isLoggedIn ? 'none' : 'inline';
+      document.querySelector('.logout-link').style.display = isLoggedIn ? 'inline' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', updateHeaderLinks);
+
+    
+    function openModal() {
+      document.getElementById('searchModal').style.display = 'block';
+      
+      document.getElementById('modalSearchInput').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('searchModal').style.display = 'none';
+      
+      document.querySelector('.modal-search-results').innerHTML = '';
+    }
+
+    
+    function modalSearchProducts() {
+      const query = document.getElementById('modalSearchInput').value.toLowerCase();
+      const resultsContainer = document.querySelector('.modal-search-results');
+
+      if (!products) {
+        alert("Products not loaded yet");
+        return;
+      }
+
+      const results = products.filter(product => product.name.toLowerCase().includes(query));
+
+      resultsContainer.innerHTML = '';
+
+      if (results.length === 0) {
+        resultsContainer.innerHTML = '<p>No products found.</p>';
+        return;
+      }
+
+      results.forEach(product => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.style.borderBottom = "1px solid #ccc";
+        resultItem.style.padding = "10px 0";
+        resultItem.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>Price: ₹${product.price}</p>
+          <button onclick="window.location.href='products.html#${product.id}'">View Product</button>
+        `;
+        resultsContainer.appendChild(resultItem);
+      });
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('searchModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+  <style>
+
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      color: #000;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <a href="index.html">
+        <img src="images/Dinanath & Sons-logo.png" alt="Dinanath & Sons Logo" class="animated-logo">
+      </a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html" class="active">Shop</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li>
+          <a href="login.html" class="profile">
+            <img src="images/login.png" alt="profile" class="profile" style="width: 30px; height: auto;">
+          </a>
+        </li>
+        <li>
+          <a href="cart.html" class="cart">
+            <img src="images/cart-icon.png" alt="Cart" class="cart-icon" style="width: 30px; height: auto;">
+            <span class="cart-count">0</span>
+          </a>
+        </li>
+        <li><a href="wishlist.html" class="active">Wishlist ❤️</a></li>
+      </ul>
+    </nav>        
+  </header> 
+
+  <!-- Banner -->
+  <section class="banner">
+    <h1 style="font-family: Arial, sans-serif; font-size: 36px; color: red;">Welcome to Dinanath & Sons!</h1>
+    <button onclick="window.location.href='products.html'" style="margin-top: 1rem;">Shop Now</button>
+    <!-- Search bar added in the banner; clicking it opens the modal -->
+    <div class="search-bar" style="margin-top: 2rem;">
+      <input type="text" id="searchInput" placeholder="Click to search products..." 
+             style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;" onclick="openModal()">
+      <button onclick="openModal()" style="padding: 10px 20px; margin-left: 10px; border-radius: 5px; background-color: #e21d22; color: white; border: none;">Search</button>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <div class="categories-banner">
+    <h2>Shop by Category</h2>
+    <div class="categories-container">
+        <div class="category-item">
+            <a href="products.html?category=Testers">
+                <img src="images/Testers.jpeg" alt="Testers">
+                <p>Testers</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Scales">
+                <img src="images/Scales.jpeg" alt="Scales">
+                <p>Scales</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Tweezers">
+                <img src="images/Tweezers.jpeg" alt="Tweezers">
+                <p>Tweezers</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Sieves">
+                <img src="images/Sieves.jpeg" alt="Sieves">
+                <p>Sieves</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Abravises">
+                <img src="images/Abrasives.jpeg" alt="Abravises">
+                <p>Abravises</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Displays">
+                <img src="images/Displays.jpeg" alt="Chemicals     ">
+                <p>Chemicals</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Brushes">
+                <img src="images/Brushes.jpeg" alt="Brushes">
+                <p>Brushes</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Loupes">
+                <img src="images/Loupes.jpeg" alt="Loupes">
+                <p>Loupes</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Jewellery cases">
+                <img src="images/Jewellery cases.jpeg" alt="Jewellery cases">
+                <p>Jewellery cases</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Cutters">
+                <img src="images/Cutters.jpg" alt="Cutters">
+                <p>Cutters</p>
+            </a>
+        </div>
+        <div class="category-item">
+            <a href="products.html?category=Gauges">
+                <img src="images/Gauges.jpeg" alt="Gauges">
+                <p>Gauges</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+  <!-- Modal for Search Results -->
+  <div id="searchModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Search Products</h2>
+      <div class="modal-search-bar" style="margin: 20px 0;">
+        <input type="text" id="modalSearchInput" placeholder="Search products..." style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;">
+        <button onclick="modalSearchProducts()" style="padding: 10px 20px; margin-left: 10px; border-radius: 5px; background-color: #e21d22; color: white; border: none;">Search</button>
+      </div>
+      <div class="modal-search-results"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-about">
+        <img src="images/Dinanath & Sons-logo.png" alt="Dinanath & Sons Logo" class="footer-logo">
+        <p>Your one-stop shop for stylish home decor and appliances. Transform your space with Dinanath & Sons!</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Shop</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact Us</h4>
+        <p>Email: Dinanath & Sons@gmail.com</p>
+        <p>Phone: +91 98115 39510</p>
+        <p>Address: Shahdara, Delhi, India</p>
+      </div>
+      <div class="footer-social">
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><img src="images/Facebook.png" alt="Facebook"></a>
+          <a href="#"><img src="images/Instagram.png" alt="Instagram"></a>
+          <a href="#"><img src="images/Twitter.png" alt="Twitter"></a>
+          <a href="#"><img src="images/Google.png" alt="Google"></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Dinanath & Sons. All Rights Reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a> | <a href="refundpolicy.html">Refund Policy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

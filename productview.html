@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore Dinanath & Sons's collection of stylish home appliances and decor. Shop for sofas, lamps, mirrors, home appliances and more at affordable prices.">
+    <meta name="keywords" content="home appliances, home decor, Dinanath & Sons, ghar dazzle, Ghar dazzle, Ghar dazzle, Ghar dazle, home decoration, decoration, affordable home appliances, home Appliances ">
+    <meta name="author" content="Dinanath & Sons">
+    <title>Product Preview - Dinanath & Sons</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="images/Dinanath & Sons-logo.png" alt="Dinanath & Sons Logo" class="animated-logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html" class="active">Shop</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li>
+                    <a href="login.html" class="profile">
+                        <img src="images/login.png" alt="profile" class="profile" style="width: 30px; height: auto;">
+                </a>
+                </li>
+                <li>
+                    <a href="cart.html" class="cart">
+                        <img src="images/cart-icon.png" alt="Cart" class="cart-icon" style="width: 30px; height: auto;">
+                        <span class="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>        
+    </header>
+
+    <!-- productview.html -->
+    <section id="product-details">
+      <div id="product-info">
+        <div id="media-gallery">
+          <div class="image-zoom-container">
+            <img id="main-product-image" alt="Product Image">
+            <div id="zoom-lens"></div>
+          </div>
+          <div id="thumbnail-container"></div>
+        </div>
+        <div id="product-info-text">
+          <h2 id="product-name"></h2>
+          <p id="product-price"></p>
+          <p id="product-description"></p>
+          <p id="product-stock"></p> <!-- Stock Availability -->
+          <button id="add-to-cart" onclick="addToCart(product.name, product.price)">Add to Cart</button>
+          <div id="product-variants">
+            <h3>Available Variants</h3>
+            <div id="variant-options"></div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+  
+  <script src="products.js"></script>
+  <script>
+    // Get product ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const productId = parseInt(params.get('id'));
+  
+    // Find the product in the centralized data
+    const product = products.find(p => p.id === productId);
+  
+    // Render product details
+    document.getElementById('product-name').textContent = product.name;
+    document.getElementById('product-price').textContent = `₹${product.price.toLocaleString()}`;
+    document.getElementById('product-description').textContent = product.description;
+    document.getElementById('product-stock').textContent = product.stock > 0 ? "In Stock" : "Out of Stock";
+  
+    const mainImage = document.getElementById('main-product-image');
+    const thumbnailContainer = document.getElementById('thumbnail-container');
+
+    // Default to first image
+  mainImage.src = product.images[0];
+
+  // Generate thumbnails
+  product.images.forEach((img, index) => {
+    let imgElem = document.createElement("img");
+    imgElem.src = img;
+    imgElem.classList.add("thumbnail");
+    imgElem.onclick = () => mainImage.src = img;
+    thumbnailContainer.appendChild(imgElem);
+  });
+
+  // Zoom Effect
+  const zoomLens = document.getElementById("zoom-lens");
+  mainImage.addEventListener("mousemove", function(event) {
+    const { left, top, width, height } = mainImage.getBoundingClientRect();
+    const x = event.pageX - left - window.scrollX;
+    const y = event.pageY - top - window.scrollY;
+
+    zoomLens.style.backgroundImage = `url('${mainImage.src}')`;
+    zoomLens.style.backgroundSize = `${width * 2}px ${height * 2}px`;
+    zoomLens.style.backgroundPosition = `-${x}px -${y}px`;
+    zoomLens.style.display = "block";
+  });
+
+  mainImage.addEventListener("mouseleave", () => zoomLens.style.display = "none");
+  
+    // Add to cart
+    function addToCart(productName, productPrice) {
+    // Use the global cartItems variable from scripts.js
+    cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+
+    if (existingItemIndex > -1) {
+        cartItems[existingItemIndex].quantity += 1;
+    } else {
+        cartItems.push({
+            id: product.id, 
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.image
+        });S
+    } 
+
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    updateCartCount();
+    alert(`${product.name} has been added to your cart!`);S
+}
+
+function updateCart(productId, productName, productPrice, action) {
+    const product = products.find(p => p.name === productName); // Get full product object
+    const existingItemIndex = cartItems.findIndex(item => item.id === product.id); // Match by ID
+
+    cartItems.push({
+        id: product.id, 
+        name: productName,
+        price: productPrice,
+        quantity: quantity
+    });
+}
+
+if (product.variants) {
+    const variantContainer = document.getElementById('variant-options');
+    
+    // Iterate through each variant type (e.g., Material, Pattern, etc.)
+    Object.keys(product.variants).forEach(variantType => {
+      const variantDiv = document.createElement('div');
+      variantDiv.innerHTML = `<strong>${variantType}:</strong> `;
+      
+      // Iterate through each option for the current variant type
+      product.variants[variantType].forEach(option => {
+        const optionBtn = document.createElement('button');
+        optionBtn.textContent = option;
+        optionBtn.className = 'variant-button';
+        
+        // Customize this click behavior as needed
+        optionBtn.onclick = function () {
+          console.log(`Selected ${variantType}: ${option}`);
+          // Insert your custom logic here (e.g., update the UI, record selection, etc.)
+        };
+        
+        variantDiv.appendChild(optionBtn);
+      });
+      
+      variantContainer.appendChild(variantDiv);
+    });
+  }
+
+  </script> 
+
+<section class="recommended-products">
+    <h2>Recommended Products</h2>
+    <div class="product-grid" id="recommended-products"></div>
+  </section>
+  <script>
+    // Display recommended products (e.g., same category)
+    const recommendedProducts = products.filter(p => 
+    p.category === product.category && p.id !== product.id
+);
+
+const recommendedContainer = document.getElementById('recommended-products');
+recommendedContainer.innerHTML = ''; // Clear existing content first
+
+recommendedProducts.forEach(p => {
+    recommendedContainer.innerHTML += `
+        <div class="product-item">
+            <img src="${p.image}" alt="${p.name}" onclick="openQuickView(${p.id})">
+            <h3>${p.name}</h3>
+            <p>₹${p.price.toLocaleString()}</p>
+        </div>
+    `;
+});
+  </script>
+  <!-- Styles for Wishlist in Product View -->
+<style>
+    .wishlist-button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 2rem;
+      color: #ff4757;
+    }
+    .wishlist-button.added {
+      color: #ff6b81;
+    }
+  </style>
+  
+  <!-- JavaScript for Wishlist Functionality on Product View -->
+  <script>
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+  
+    // Function to check if the product is already in the wishlist
+    function isProductInWishlist(productId) {
+      return wishlist.some(item => item.id === productId);
+    }
+  
+    // Function to toggle wishlist status for a product
+    function toggleWishlist(product) {
+      const index = wishlist.findIndex(item => item.id === product.id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        alert(`${product.name} removed from your wishlist.`);
+      } else {
+        wishlist.push(product);
+        alert(`${product.name} added to your wishlist.`);
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishlistButton(product.id);
+    }
+  
+    // Function to update wishlist button appearance
+    function updateWishlistButton(productId) {
+      const wishlistBtn = document.getElementById('wishlist-button');
+      if (isProductInWishlist(productId)) {
+        wishlistBtn.textContent = '❤️';
+        wishlistBtn.classList.add('added');
+      } else {
+        wishlistBtn.textContent = '🤍';
+        wishlistBtn.classList.remove('added');
+      }
+    }
+  
+    // Add wishlist button to product view
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const productId = parseInt(params.get('id'));
+      const product = products.find(p => p.id === productId);
+  
+      const productContainer = document.querySelector('#product-info-text');
+      const wishlistButton = document.createElement('button');
+      wishlistButton.id = 'wishlist-button';
+      wishlistButton.classList.add('wishlist-button');
+      wishlistButton.addEventListener('click', () => toggleWishlist(product));
+      productContainer.appendChild(wishlistButton);
+  
+      updateWishlistButton(productId);
+    });
+  
+</script>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+          <div class="footer-about">
+              <img src="images/Dinanath & Sons-logo.png" alt="Dinanath & Sons Logo" class="footer-logo">
+              <p>Your one-stop shop for stylish home decor and appliances. Transform your space with Dinanath & Sons!</p>
+          </div>
+  
+          <div class="footer-links">
+              <h4>Quick Links</h4>
+              <ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="products.html">Shop</a></li>
+                  <li><a href="about.html">About Us</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+              </ul>
+          </div>
+  
+          <div class="footer-contact">
+              <h4>Contact Us</h4>
+              <p>Email: Dinanath & Sons@gmail.com</p>
+              <p>Phone: +91 98115 39510</p>
+              <p>Address: Shahdara, Delhi, India</p>
+          </div>
+  
+          <div class="footer-social">
+              <h4>Follow Us</h4>
+              <div class="social-icons">
+                  <a href="#"><img src="images/Facebook.png" alt="Facebook"></a>
+                  <a href="#"><img src="images/Instagram.png" alt="Instagram"></a>
+                  <a href="#"><img src="images/Twitter.png" alt="Twitter"></a>
+                  <a href="#"><img src="images/Google.png" alt="Google"></a>
+              </div>
+          </div>
+      </div>
+  
+      <div class="footer-bottom">
+          <p>&copy; 2024 Dinanath & Sons. All Rights Reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p> | <a href="refundpolicy.html"> Refund Policy</a></p>
+      </div>
+  </footer>
+</body>
+</html>
